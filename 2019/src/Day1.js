@@ -1,4 +1,4 @@
-import { runningReduce, sumOf } from "jsr:@std/collections";
+import { sumOf } from "jsr:@std/collections";
 
 export const calculateFuelRequired = (mass) =>
   Math.floor(parseInt(mass) / 3) - 2;
