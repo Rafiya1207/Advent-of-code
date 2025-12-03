@@ -28,3 +28,32 @@ Deno.test("execute instructions -- add", () => {
 Deno.test("execute instructions -- add", () => {
   assertEquals(executeInstructions([1, 0, 2, 5, 99]), [1, 0, 2, 5, 99, 3]);
 });
+
+Deno.test("execute instructions -- multiply", () => {
+  assertEquals(executeInstructions([2, 0, 0, 0, 99]), [4, 0, 0, 0, 99]);
+});
+
+Deno.test("execute instructions -- multiply", () => {
+  assertEquals(executeInstructions([2, 3, 0, 0, 99]), [0, 3, 0, 0, 99]);
+});
+
+Deno.test("execute instructions -- multiply", () => {
+  assertEquals(executeInstructions([2, 3, 2, 0, 99]), [0, 3, 2, 0, 99]);
+});
+
+Deno.test("execute instructions -- multiply", () => {
+  assertEquals(executeInstructions([2, 3, 2, 2, 99]), [2, 3, 4, 2, 99]);
+});
+
+Deno.test("execute instructions -- multiply", () => {
+  assertEquals(executeInstructions([2, 0, 2, 3, 99]), [2, 0, 2, 4, 99]);
+});
+
+Deno.test("execute instructions -- multiply", () => {
+  assertEquals(executeInstructions([2, 0, 2, 4, 99]), [2, 0, 2, 4, 4]);
+});
+
+Deno.test("execute instructions -- multiply", () => {
+  assertEquals(executeInstructions([2, 0, 2, 5, 99]), [2, 0, 2, 5, 99, 4]);
+});
+
