@@ -46,25 +46,57 @@ const closestPoint = (points) => {
     dist.push(manhattanDist(points[i]));
   }
   console.log(points);
-  
+
   return minOf(dist, (item) => item);
 };
 
 const part1 = () => {
-  const wire1Points = genPath(['R75','D30','R83','U83','L12','D49','R71','U7','L72']);
-  const wire2Points = genPath(['U62','R66','U55','R34','D71','R55','D58','R83']);
   // const wire1Points = genPath(['R8','U5','L5','D3']);
   // const wire2Points = genPath(['U7','R6','D4','L4']);
 
-  console.log(wire1Points);
-  console.log(wire2Points);
-  
-
   const intersectionPoints = findIntersectionPoints(wire1Points, wire2Points);
-  console.log(intersectionPoints);
-  
+
   console.log(closestPoint(intersectionPoints));
 };
 
+const findSteps = (point, ins) => {
+  let steps = 0;
+  let prevPoint = [0, 0];
 
-main();
+  for (const i of ins) {
+    for (let _ = 0; _ < parseInt(i.slice(1)); _++) {
+      const currPoint = pointsMap[i[0]](prevPoint);
+      steps += 1;
+      if (arePointsEqual(currPoint, point)) {
+        return steps;
+      }
+      prevPoint = currPoint;
+    }
+  }
+  return steps;
+};
+
+const sumsOfSteps = (wire1, wire2, intersectionPoints) => {
+  const sums = [];
+  for (let i = 1; i < intersectionPoints.length; i++) {
+    const wire1Steps = findSteps(intersectionPoints[i], wire1);
+    const wire2Steps = findSteps(intersectionPoints[i], wire2);
+
+    sums.push(wire1Steps + wire2Steps);
+  }
+  return sums;
+};
+
+const part2 = () => {
+  // const wire1 = ["R8", "U5", "L5", "D3"];
+  // const wire2 = ["U7", "R6", "D4", "L4"];
+  
+  const wire1Points = genPath(wire1);
+  const wire2Points = genPath(wire2);
+  const intersectionPoints = findIntersectionPoints(wire1Points, wire2Points);
+  const sums = sumsOfSteps(wire1, wire2, intersectionPoints);
+
+  console.log(minOf(sums, (x) => x));
+};
+
+part2();
