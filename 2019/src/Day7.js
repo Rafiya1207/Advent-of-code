@@ -11,10 +11,9 @@ export const getInput = () => {
   return input;
 };
 
-
-const amp = (phase) => {
+const amp = (phaseSetting) => {
   const program = [...ACS];
-  inputs.push(phase);
+  inputs.push(phaseSetting);
   inputs.push(out[0]);
   out.pop();
   part2(program);

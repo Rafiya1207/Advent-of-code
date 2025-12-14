@@ -7,7 +7,7 @@ const add = (program, pointer, modesAndOpcode) => {
 
   const address1 = modes[param1Mode](pointer + 1, program);
   const address2 = modes[param2Mode](pointer + 2, program);
-  const targetAddress = program[pointer + operationMap[1].targetPosition];
+  const targetAddress = program[pointer + OPCODES[1].targetPosition];
 
   program[targetAddress] = program[address1] + program[address2];
   return pointer + 4;
@@ -19,7 +19,7 @@ const multiply = (program, pointer, modesAndOpcode) => {
 
   const address1 = modes[param1Mode](pointer + 1, program);
   const address2 = modes[param2Mode](pointer + 2, program);
-  const targetAddress = program[pointer + operationMap[2].targetPosition];
+  const targetAddress = program[pointer + OPCODES[2].targetPosition];
 
   program[targetAddress] = program[address1] * program[address2];
   return pointer + 4;
@@ -79,7 +79,7 @@ const lessThan = (program, pointer, modesAndOpcode) => {
 
   const isLessThan = program[address1] < program[address2] ? 1 : 0;
 
-  const targetAddress = program[pointer + operationMap[opcode].targetPosition];
+  const targetAddress = program[pointer + OPCODES[opcode].targetPosition];
 
   program[targetAddress] = isLessThan;
   return pointer + 4;
@@ -95,7 +95,7 @@ const equals = (program, pointer, modesAndOpcode) => {
 
   const isEqual = program[address1] === program[address2] ? 1 : 0;
 
-  const targetAddress = program[pointer + operationMap[opcode].targetPosition];
+  const targetAddress = program[pointer + OPCODES[opcode].targetPosition];
 
   program[targetAddress] = isEqual;
   return pointer + 4;
@@ -134,7 +134,9 @@ const operationMap = {
     operation: equals,
     targetPosition: 3,
   },
-  // 4: { operation: output, pointer: 2, targetPosition: 1 },
+  99: {
+    operation: halt,
+  },
 };
 
 const positionMode = (index, ins) => ins[index];
