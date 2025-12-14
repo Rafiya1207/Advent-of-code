@@ -5,21 +5,25 @@ const inputs = {
 
 const parse = (input) => input.split(",").map((x) => parseInt(x));
 
-const performAddition = (computer) => {
-  const { program, currentPosition: nextPosition } = computer;
-  const input1Address = program[nextPosition + 1];
-  const input2Address = program[nextPosition + 2];
-  const outputAddress = program[nextPosition + 3];
+const getArgs = ({ program, currentPosition }, length = 4) => {
+  const args = [];
+  for (let argCount = 0; argCount < length; argCount++) {
+    args.push(program[currentPosition + argCount]);
+  }
+  return args;
+};
+
+const performAddition = (computer, args) => {
+  const { program } = computer;
+  const [input1Address, input2Address, outputAddress] = args;
 
   program[outputAddress] = program[input1Address] + program[input2Address];
   computer.currentPosition += 4;
 };
 
-const performMul = (computer) => {
-  const { program, currentPosition: nextPosition } = computer;
-  const input1Address = program[nextPosition + 1];
-  const input2Address = program[nextPosition + 2];
-  const outputAddress = program[nextPosition + 3];
+const performMul = (computer, args) => {
+  const { program } = computer;
+  const [input1Address, input2Address, outputAddress] = args;
 
   program[outputAddress] = program[input1Address] * program[input2Address];
   computer.currentPosition += 4;
@@ -41,8 +45,10 @@ const stepForward = (computer) => {
   applyOverrides(computer);
 
   while (!computer.isHalted) {
-    OPCODES[computer.program[computer.currentPosition]](
+    const [opcode, ...args] = getArgs(computer);
+    OPCODES[opcode](
       computer,
+      args,
     );
   }
   return computer;
