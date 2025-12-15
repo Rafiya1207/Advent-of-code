@@ -1,3 +1,5 @@
+import { chunk } from "@std/collections/chunk";
+
 const inputs = {
   simpleAddition: "1,0,0,0,99",
   puzzleInput: Deno.readTextFileSync("./data/day2_input.txt"),
@@ -42,14 +44,18 @@ const applyOverrides = ({ program, overrides }) => {
 };
 
 const stepForward = (computer) => {
+  const [opcode, ...args] = getArgs(computer);
+  OPCODES[opcode](
+    computer,
+    args,
+  );
+};
+
+const executeInstructions = (computer) => {
   applyOverrides(computer);
 
   while (!computer.isHalted) {
-    const [opcode, ...args] = getArgs(computer);
-    OPCODES[opcode](
-      computer,
-      args,
-    );
+    stepForward(computer);
   }
   return computer;
 };
@@ -65,4 +71,37 @@ const program = parse(inputs.puzzleInput);
 
 const computer = createComputer(program, [[1, 12], [2, 2]]);
 
-console.log(stepForward(computer));
+// console.log(executeInstructions(computer));
+
+const createGrid = (program) => {
+  const width = 16;
+  const columnWidth = 5;
+  const rows = chunk(program, width);
+
+  return rows.map((row) =>
+    row.map(
+      (element) =>
+        ("" + element)
+          .padStart(columnWidth, " "),
+    )
+      .join("")
+  ).join("\n");
+};
+
+const displayGrid = (grid) => {
+  console.clear();
+  console.log(grid);
+};
+
+const debuger = () => {
+  applyOverrides(computer);
+
+  while (true) {
+    const grid = createGrid(program);
+    prompt();
+    displayGrid(grid);
+    stepForward(computer);
+  }
+};
+
+debuger();
