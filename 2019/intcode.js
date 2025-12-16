@@ -4,10 +4,12 @@ const inputs = {
   simpleAddition: "1,0,0,0,99",
   simpleMultiplicationWithModes: "1002,4,3,4,33", // 1002, 4, 3, 4, 99
   simpleIO: "3,0,4,0,99",
+  simpleJumpIfTrue: "1105,1,7,1,0,0,0,99",
   puzzleInput: Deno.readTextFileSync("./data/day2_input.txt"),
+  puzzleInputDay5: Deno.readTextFileSync("./data/day5_input.txt"),
 };
 
-const getInput = () => 1;
+const getInput = () => 5;
 
 const parse = (input) => input.split(",").map((x) => parseInt(x));
 
@@ -22,26 +24,72 @@ const modesMap = {
 
 const performAddition = (computer, args) => {
   const { program } = computer;
-  const [input1Address, input2Address, outputAddress] = args;
+  const [opcode, input1Address, input2Address, outputAddress] = args;
 
   program[outputAddress] = program[input1Address] + program[input2Address];
+  computer.currentPosition += OPCODES[opcode].length;
 };
 
 const performMul = (computer, args) => {
   const { program } = computer;
-  const [input1Address, input2Address, outputAddress] = args;
+  const [opcode, input1Address, input2Address, outputAddress] = args;
 
   program[outputAddress] = program[input1Address] * program[input2Address];
+  computer.currentPosition += OPCODES[opcode].length;
 };
 
-const input = (computer, ...targetAddress) => {
+const input = (computer, [opcode, targetAddress]) => {
   const inputValue = getInput();
 
   computer.program[targetAddress] = inputValue;
+  computer.currentPosition += OPCODES[opcode].length;
 };
 
-const output = (computer, ...targetAddress) => {
+const output = (computer, [opcode, targetAddress]) => {
   computer.out.push(computer.program[targetAddress]);
+  computer.currentPosition += OPCODES[opcode].length;
+};
+
+const jumpIfTrue = (computer, args) => {
+  const { program } = computer;
+  const [opcode, inputAddress, targetAddress] = args;
+
+  if (program[inputAddress] !== 0) {
+    computer.currentPosition = program[targetAddress];
+    return;
+  }
+  computer.currentPosition += OPCODES[opcode].length;
+};
+
+const jumpIfFalse = (computer, args) => {
+  const { program } = computer;
+  const [opcode, inputAddress, targetAddress] = args;
+
+  if (program[inputAddress] === 0) {
+    computer.currentPosition = program[targetAddress];
+    return;
+  }
+  computer.currentPosition += OPCODES[opcode].length;
+};
+
+const lessThan = (computer, args) => {
+  const { program } = computer;
+  const [opcode, input1Address, input2Address, outputAddress] = args;
+
+  program[outputAddress] = program[input1Address] < program[input2Address]
+    ? 1
+    : 0;
+  computer.currentPosition += OPCODES[opcode].length;
+};
+
+const equals = (computer, args) => {
+  const { program } = computer;
+  const [opcode, input1Address, input2Address, outputAddress] = args;
+
+  program[outputAddress] = program[input1Address] === program[input2Address]
+    ? 1
+    : 0;
+  computer.currentPosition += OPCODES[opcode].length;
 };
 
 const halt = (computer) => computer.isHalted = true;
@@ -61,6 +109,22 @@ const OPCODES = {
   4: {
     operation: output,
     length: 2,
+  },
+  5: {
+    operation: jumpIfTrue,
+    length: 3,
+  },
+  6: {
+    operation: jumpIfFalse,
+    length: 3,
+  },
+  7: {
+    operation: lessThan,
+    length: 4,
+  },
+  8: {
+    operation: equals,
+    length: 4,
   },
   99: {
     operation: halt,
@@ -91,9 +155,8 @@ const stepForward = (computer) => {
   const [opcode, ...args] = getArgs(computer);
   OPCODES[opcode].operation(
     computer,
-    args,
+    [opcode, ...args],
   );
-  computer.currentPosition += OPCODES[opcode].length
 };
 
 const executeInstructions = (computer) => {
@@ -110,7 +173,7 @@ const createComputer = (program, overrides = []) => ({
   currentPosition: 0,
   isHalted: false,
   overrides,
-  out: []
+  out: [],
 });
 
 const createGrid = (program) => {
@@ -145,7 +208,7 @@ const debuger = () => {
 };
 
 const main = () => {
-  const program = parse(inputs.simpleIO);
+  const program = parse(inputs.puzzleInputDay5);
 
   const computer = createComputer(program);
 
