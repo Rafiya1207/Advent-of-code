@@ -17,14 +17,15 @@ const performMul = (computer, args) => {
 };
 
 const input = (computer, [opcode, targetAddress]) => {
-  const inputValue = getInput();
+  const inputValue = computer.inputs[0];
 
   computer.program[targetAddress] = inputValue;
   computer.currentPosition += OPCODES[opcode].length;
+  computer.inputs.shift();
 };
 
 const output = (computer, [opcode, targetAddress]) => {
-  computer.out.push(computer.program[targetAddress]);
+  computer.outputs.push(computer.program[targetAddress]);
   computer.currentPosition += OPCODES[opcode].length;
 };
 

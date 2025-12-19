@@ -3,7 +3,8 @@ export const createComputer = (program, overrides = []) => ({
   currentPosition: 0,
   isHalted: false,
   overrides,
-  out: [],
+  outputs: [],
+  inputs: []
 });
 
 export const parse = (input) => input.split(",").map((x) => parseInt(x));
