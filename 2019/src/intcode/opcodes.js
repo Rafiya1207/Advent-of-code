@@ -1,8 +1,11 @@
+const getValueAt = (program, address) => program[address] || 0;
+
 const performAddition = (computer, args) => {
   const { program } = computer;
   const [opcode, input1Address, input2Address, outputAddress] = args;
 
-  program[outputAddress] = program[input1Address] + program[input2Address];
+  program[outputAddress] = getValueAt(program, input1Address) +
+    getValueAt(program, input2Address);
   computer.currentPosition += OPCODES[opcode].length;
 };
 
@@ -10,7 +13,8 @@ const performMul = (computer, args) => {
   const { program } = computer;
   const [opcode, input1Address, input2Address, outputAddress] = args;
 
-  program[outputAddress] = program[input1Address] * program[input2Address];
+  program[outputAddress] = getValueAt(program, input1Address) *
+    getValueAt(program, input2Address);
   computer.currentPosition += OPCODES[opcode].length;
 };
 
@@ -31,8 +35,8 @@ const jumpIfTrue = (computer, args) => {
   const { program } = computer;
   const [opcode, inputAddress, targetAddress] = args;
 
-  if (program[inputAddress] !== 0) {
-    computer.currentPosition = program[targetAddress];
+  if (getValueAt(program, inputAddress) !== 0) {
+    computer.currentPosition = getValueAt(program, targetAddress);
     return;
   }
   computer.currentPosition += OPCODES[opcode].length;
@@ -42,8 +46,8 @@ const jumpIfFalse = (computer, args) => {
   const { program } = computer;
   const [opcode, inputAddress, targetAddress] = args;
 
-  if (program[inputAddress] === 0) {
-    computer.currentPosition = program[targetAddress];
+  if (getValueAt(program, inputAddress) === 0) {
+    computer.currentPosition = getValueAt(program, targetAddress);
     return;
   }
   computer.currentPosition += OPCODES[opcode].length;
@@ -53,9 +57,10 @@ const lessThan = (computer, args) => {
   const { program } = computer;
   const [opcode, input1Address, input2Address, outputAddress] = args;
 
-  program[outputAddress] = program[input1Address] < program[input2Address]
-    ? 1
-    : 0;
+  program[outputAddress] =
+    getValueAt(program, input1Address) < getValueAt(program, input2Address)
+      ? 1
+      : 0;
   computer.currentPosition += OPCODES[opcode].length;
 };
 
@@ -63,9 +68,18 @@ const equals = (computer, args) => {
   const { program } = computer;
   const [opcode, input1Address, input2Address, outputAddress] = args;
 
-  program[outputAddress] = program[input1Address] === program[input2Address]
-    ? 1
-    : 0;
+  program[outputAddress] =
+    getValueAt(program, input1Address) === getValueAt(program, input2Address)
+      ? 1
+      : 0;
+  computer.currentPosition += OPCODES[opcode].length;
+};
+
+const adjustRelativeBase = (computer, args) => {
+  const { program } = computer;
+  const [opcode, offsetAddress] = args;
+
+  computer.relativeBase += getValueAt(program, offsetAddress);
   computer.currentPosition += OPCODES[opcode].length;
 };
 
@@ -105,6 +119,10 @@ export const OPCODES = {
   8: {
     operation: equals,
     length: 4,
+  },
+  9: {
+    operation: adjustRelativeBase,
+    length: 2,
   },
   99: {
     operation: halt,

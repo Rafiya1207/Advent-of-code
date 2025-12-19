@@ -3,8 +3,8 @@ import { createComputer, parse } from "./computer.js";
 import { inputs } from "./inputs.js";
 
 const main = () => {
-  const program = parse(inputs.simpleDay9Output);
-  const computer = createComputer(program);
+  const program = parse(inputs.puzzleInputDay9);
+  const computer = createComputer(program, 0);
 
   console.log(executeInstructions(computer));
 };
