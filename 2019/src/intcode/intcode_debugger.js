@@ -25,7 +25,7 @@ const displayGrid = (grid) => {
 };
 
 export const debuger = () => {
-  const program = parse(inputs.puzzleInput);
+  const program = parse(inputs.simpleDay7);
   const computer = createComputer(program);
 
   applyOverrides(computer);

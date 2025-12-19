@@ -3,7 +3,7 @@ import { createComputer, parse } from "./computer.js";
 import { inputs } from "./inputs.js";
 
 const main = () => {
-  const program = parse(inputs.simpleAddition);
+  const program = parse(inputs.simpleDay9Output);
   const computer = createComputer(program);
 
   console.log(executeInstructions(computer));

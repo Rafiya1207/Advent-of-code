@@ -1,5 +1,3 @@
-const getInput = () => 5;
-
 const performAddition = (computer, args) => {
   const { program } = computer;
   const [opcode, input1Address, input2Address, outputAddress] = args;
@@ -71,7 +69,9 @@ const equals = (computer, args) => {
   computer.currentPosition += OPCODES[opcode].length;
 };
 
-const halt = (computer) => computer.isHalted = true;
+const halt = (computer) => {
+  computer.isHalted = true;
+};
 
 export const OPCODES = {
   1: {
