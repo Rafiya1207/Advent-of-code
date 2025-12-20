@@ -1,14 +1,5 @@
 import { OPCODES } from "./opcodes.js";
 
-const positionMode = (index, program) => program[index];
-
-const immediateMode = (index) => index;
-
-const modesMap = {
-  0: positionMode,
-  1: immediateMode,
-};
-
 const getAddress = (program, paramIndex, mode, relativeBase) => {
   const offset = program[paramIndex];
   
