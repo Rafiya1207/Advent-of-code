@@ -1,6 +1,6 @@
 import { maxBy } from "@std/collections";
 
-const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+export const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
 
 const detectCount = (originPoint, points) => {
   const lineOfSightPoints = {};
@@ -23,15 +23,15 @@ const detectCount = (originPoint, points) => {
   return count;
 };
 
-const asteroidsDetections = (asteroids) =>
+export const asteroidsDetections = (asteroids) =>
   asteroids.map((asteroid) => ({
     asteroid,
     detectionCount: detectCount(asteroid, asteroids),
   }));
 
-const parseString = (string) => string.split("\n").map((x) => x.split(""));
+export const parseString = (string) => string.split("\n").map((x) => x.split(""));
 
-const getPoints = (rows) => {
+export const getPoints = (rows) => {
   const points = [];
   rows.forEach((row, i) => {
     row.forEach((char, j) => {
@@ -41,13 +41,12 @@ const getPoints = (rows) => {
   return points;
 };
 
-const monitoringStation = (map) => {
+export const monitoringStationOf = (map) => {
   const parsedMap = parseString(map);
   const asteroidsLocations = getPoints(parsedMap);
   const locations = asteroidsDetections(asteroidsLocations);
+  
   return maxBy(locations, ({ detectionCount }) => detectionCount);
 };
 
-const asteroidsMap = Deno.readTextFileSync("./data/day10_input.txt");
-
-console.log(monitoringStation(asteroidsMap));
+// const asteroidsMap = Deno.readTextFileSync("./data/day10_input.txt");
