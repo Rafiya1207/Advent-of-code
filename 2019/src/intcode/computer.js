@@ -4,7 +4,7 @@ export const createComputer = (program, relativeBase, overrides = []) => ({
   isHalted: false,
   overrides,
   outputs: [],
-  inputs: [2],
+  inputs: [],
   relativeBase
 });
 
